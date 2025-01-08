@@ -1,0 +1,158 @@
+# RelaxNG Compact Schema Specification for RsML 1.0
+# Copyright (C) 2025, Jing Huang <RadioNoiseE@gmail.com>
+
+default namespace rsml = "file://fake.path/2025/markup/rsml"
+namespace cmml = "http://www.w3.org/1998/math/mathml"
+
+start = rsml.element
+
+extern._any.attribute = attribute * - rsml:* { text }
+extern._any.element =
+  element * - rsml:* {
+    ( extern._any.attribute | text | extern._any.element )*
+  }
+
+inline.style.attribute =
+  attribute style { string "embed" }
+inline.element =
+  ( inline.text.element
+    | inline.type.element
+    | inline.math.element
+    | inline.verb.element
+    | inline.semantic.element
+    | inline.reference.element )*
+
+display.style.attribute =
+  attribute style { string "block" }
+display.geometry.attribute =
+  attribute size { xsd:string { pattern = "r\d+(\.\d+)?" } }
+display.align.attribute =
+  attribute align { string "left" | string "center" | string "right" }
+display.xref.attribute =
+  attribute xref { xsd:string { pattern = "[a-zA-Z0-9]+" } }
+display.element =
+  ( display.list.element
+    | display.figure.element
+    | display.table.element
+    | display.math.element
+    | display.verb.element
+    | display.message.element )*
+
+rsml.element =
+  element rsml {
+    attribute version { xsd:string { pattern = "1.0" } },
+    preamble.element,
+    document.element,
+    postamable.element
+  }
+
+preamble.element =
+  element meta {
+    element title { inline.element },
+    element subtitle { inline.element }?,
+    ( element author { text }?
+      & element date {
+          element year { xsd:gYear },
+          element month { xsd:gMonth }?,
+          element day { xsd:gDay }?
+        }?
+      & element affiliate { text }? )
+  }
+
+document.element =
+  element unit {
+    attribute role { string "chapter" | string "section" | string "subsection" },
+    ( element paragraph { inline.element }
+      | display.element )*,
+    document.element*
+  }+
+
+postamable.element =
+  element bibliography {
+    element entry {
+      element author { text },
+      element title { inline.element },
+      element year { xsd:gYear }
+    }+
+  }?
+
+inline.text.element =
+  text
+  | element quote { empty }
+  | element ampersand { empty }
+  | element langle { empty }
+  | element rangle { empty }
+  | element space { empty }
+inline.type.element =
+  element emphasize { inline.text.element+ }
+  | element highlight { inline.text.element+ }
+inline.math.element =
+  element math {
+    inline.style.attribute?,
+    extern._any.element+
+  }
+inline.verb.element =
+  element verb {
+    ( inline.style.attribute?
+      & attribute lang { text } ),
+    inline.text.element+
+  }
+inline.semantic.element =
+  element term { inline.text.element+ }
+  | element abbreviation { inline.text.element+ }
+  | element keyword { inline.text.element+ }
+inline.reference.element =
+  element link { attribute literal { text }, xsd:anyURI }
+  | element lable { xsd:string { pattern = "[a-zA-Z0-9]+" } }
+  | element refer { xsd:string { pattern = "[a-zA-Z0-9]+" } }
+  | element footnote {
+      attribute symbol { text },
+      inline.element
+    }
+
+display.list.element =
+  element list {
+    ( attribute type { string "enumerate" | string "bullet" | string "description" }
+      & attribute level { xsd:unsignedInt }
+      & display.xref.attribute? ),
+    element item {
+      inline.element
+      & display.list.element?
+    }*
+  }
+display.figure.element =
+  element figure {
+    ( display.geometry.attribute
+      & display.align.attribute
+      & display.xref.attribute )*,
+    ( element image { xsd:anyURI }
+      & element caption { inline.element }? )
+  }
+display.table.element =
+  element table {
+    ( display.geometry.attribute
+      & display.align.attribute
+      & display.xref.attribute )*,
+    ( ( element head {
+          element column { attribute align { string "left" | string "center" | string "right" }?,
+                           inline.element }+
+        },
+        element body { element row { element cell { inline.element }+ }+ } )
+      & element caption { inline.element }? )
+  }
+display.math.element =
+  element math {
+    display.style.attribute?,
+    extern._any.element+
+  }
+display.verb.element =
+  element verb {
+    ( display.style.attribute?
+      & attribute lang { text } ),
+    inline.text.element+
+  }
+display.message.element =
+  element message {
+    attribute type { string "note" | string "tip" | string "warning" | string "caution" },
+    inline.element
+  }
