@@ -2,7 +2,7 @@
 # Copyright (C) 2025, Jing Huang <RadioNoiseE@gmail.com>
 
 default namespace rsml = "file://fake.path/2025/Markup/RsML"
-namespace cmml = "http://www.w3.org/1998/Math/MathML"
+namespace mml = "http://www.w3.org/1998/Math/MathML"
 
 start = rsml.element
 
@@ -40,7 +40,8 @@ display.element =
 
 rsml.element =
   element rsml {
-    attribute version { xsd:string { pattern = "1.0" } },
+    ( attribute version { xsd:string { pattern = "1.0" } }
+      & attribute language { xsd:language }? ),
     preamble.element,
     document.element,
     postamable.element
