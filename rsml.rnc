@@ -105,8 +105,8 @@ inline.semantic.element =
   | element keyword { inline.text.element+ }
 inline.reference.element =
   element link { attribute literal { text }, xsd:anyURI }
-  | element label { xsd:string { pattern = "[a-zA-Z0-9]+" } }
-  | element refer { xsd:string { pattern = "[a-zA-Z0-9]+" } }
+  | element label { xsd:string { pattern = "[a-zA-Z][a-zA-Z0-9:._-]*" } }
+  | element refer { xsd:string { pattern = "[a-zA-Z][a-zA-Z0-9:._-]*" } }
   | element footnote {
       attribute symbol { text },
       inline.element
