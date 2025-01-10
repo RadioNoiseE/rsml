@@ -80,6 +80,7 @@ postamable.element =
 inline.text.element =
   text
   | element quote { empty }
+  | element apostrophe { empty }
   | element ampersand { empty }
   | element langle { empty }
   | element rangle { empty }
