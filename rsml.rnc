@@ -57,7 +57,8 @@ preamble.element =
           element month { xsd:gMonth }?,
           element day { xsd:gDay }?
         }?
-      & element affiliate { text }? )
+      & element affiliate { text }? ),
+    element abstract { inline.element }?
   }
 
 document.element =
