@@ -117,7 +117,6 @@ inline.reference.element =
 display.list.element =
   element list {
     ( attribute type { string "enumerate" | string "bullet" | string "description" }
-      & attribute level { xsd:unsignedInt }
       & display.xref.attribute? ),
     element item {
       inline.element
