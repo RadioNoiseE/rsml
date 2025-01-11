@@ -29,7 +29,7 @@ display.geometry.attribute =
 display.align.attribute =
   attribute align { string "left" | string "center" | string "right" }
 display.xref.attribute =
-  attribute xref { xsd:string { pattern = "[a-zA-Z0-9]+" } }
+  attribute xref { text }
 display.element =
   ( display.list.element
     | display.figure.element
@@ -107,8 +107,8 @@ inline.semantic.element =
   | element keyword { inline.text.element+ }
 inline.reference.element =
   element link { attribute literal { text }, xsd:anyURI }
-  | element label { xsd:string { pattern = "[a-zA-Z][a-zA-Z0-9:._-]*" } }
-  | element refer { xsd:string { pattern = "[a-zA-Z][a-zA-Z0-9:._-]*" } }
+  | element label { text }
+  | element refer { text }
   | element footnote {
       attribute symbol { text },
       inline.element
@@ -128,7 +128,7 @@ display.figure.element =
   element figure {
     ( display.geometry.attribute
       & display.align.attribute
-      & display.xref.attribute )*,
+      & display.xref.attribute )?,
     ( element image { xsd:anyURI }
       & element caption { inline.element }? )
   }
@@ -136,7 +136,7 @@ display.table.element =
   element table {
     ( display.geometry.attribute
       & display.align.attribute
-      & display.xref.attribute )*,
+      & display.xref.attribute )?,
     ( ( element head {
           element column { attribute align { string "left" | string "center" | string "right" }?,
                            inline.element }+
