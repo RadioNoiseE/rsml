@@ -64,6 +64,7 @@ preamble.element =
 document.element =
   element unit {
     attribute role { string "chapter" | string "section" | string "subsection" },
+    element heading { inline.element },
     ( element paragraph { inline.element }
       | display.element )*,
     document.element*
