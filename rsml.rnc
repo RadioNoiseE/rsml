@@ -119,23 +119,24 @@ display.list.element =
     ( attribute type { string "enumerate" | string "bullet" | string "description" }
       & display.xref.attribute? ),
     element item {
-      inline.element
-      & display.list.element?
+      attribute name { text }?,
+      ( inline.element
+        & display.list.element? )
     }*
   }
 display.figure.element =
   element figure {
-    ( display.geometry.attribute
-      & display.align.attribute
-      & display.xref.attribute )?,
+    ( display.geometry.attribute?
+      & display.align.attribute?
+      & display.xref.attribute? ),
     ( element image { xsd:anyURI }
       & element caption { inline.element }? )
   }
 display.table.element =
   element table {
-    ( display.geometry.attribute
-      & display.align.attribute
-      & display.xref.attribute )?,
+    ( display.geometry.attribute?
+      & display.align.attribute?
+      & display.xref.attribute? ),
     ( ( element head {
           element column { attribute align { string "left" | string "center" | string "right" }?,
                            inline.element }+
