@@ -51,13 +51,13 @@ preamble.element =
   element meta {
     element title { inline.element },
     element subtitle { inline.element }?,
-    ( element author { text }?
+    ( ( element author { text },
+        element affiliate { text }? )?
       & element date {
           element year { xsd:gYear },
-          element month { xsd:gMonth }?,
-          element day { xsd:gDay }?
-        }?
-      & element affiliate { text }? ),
+          ( element month { xsd:gMonth },
+            element day { xsd:gDay } )?
+        }? ),
     element abstract { inline.element }?
   }
 
