@@ -26,10 +26,10 @@
   </xsl:template>
 
   <xsl:template mode="c2p" match="*">
-    <xsl:copy>
+    <xsl:element name="{local-name()}">
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates mode="c2p"/>
-    </xsl:copy>
+    </xsl:element>
   </xsl:template>
 
   <!-- 4.4.1.1 cn -->
