@@ -139,17 +139,21 @@ display.figure.element =
   }
 display.table.element =
   element table {
-    ( display.geometry.attribute?
-      & display.align.attribute?
+    ( display.align.attribute?
       & display.xref.attribute? ),
-    ( ( element head {
-          element column {
-            attribute align { string "left" | string "center" | string "right" }?,
-            inline.element
-          }+ },
-        element body { element row { element cell { inline.element }+ }+ } )
+    ( ( element head { display.table.column.element }?,
+        element body { display.table.column.element },
+        element foot { display.table.column.element }? )
       & element caption { inline.element }? )
   }
+display.table.column.element =
+  element column {
+    element cell {
+      ( attribute rowspan { xsd:unsignedInt }?,
+        attribute colspan { xsd:unsignedInt }? ),
+      inline.element
+    }+
+  }+
 display.math.element =
   element math {
     ( display.style.attribute?
