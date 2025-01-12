@@ -1,5 +1,5 @@
 <xsl:stylesheet version="1.0"
-                xmlns="http://www.w3.org/1998/Math/MathML"
+                xmlns="file://fake.path/2025/Markup/RsML"
                 xmlns:mml="http://www.w3.org/1998/Math/MathML"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 exclude-result-prefixes="mml">
