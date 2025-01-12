@@ -110,8 +110,8 @@ inline.reference.element =
   | element label { text }
   | element refer {
       attribute type {
-        string "chapter" | string "section" | string "subsection" |
-        string "figure" | string "table" | string "math" | string "verb" | string "label"
+        string "chapter" | string "section" | string "subsection" | string "label" |
+        string "figure" | string "table" | string "math" | string "verb"
       }, attribute uid { text }
     }
   | element footnote {
