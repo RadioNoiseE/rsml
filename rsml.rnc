@@ -29,7 +29,7 @@ display.geometry.attribute =
 display.align.attribute =
   attribute align { string "left" | string "center" | string "right" }
 display.xref.attribute =
-  attribute xref { text }
+  attribute uid { text }
 display.element =
   ( display.list.element
     | display.figure.element
@@ -108,7 +108,12 @@ inline.semantic.element =
 inline.reference.element =
   element link { attribute literal { text }, xsd:anyURI }
   | element label { text }
-  | element refer { text }
+  | element refer {
+      attribute type {
+        string "chapter" | string "section" | string "subsection" |
+        string "figure" | string "table" | string "math" | string "verb" | string "label"
+      }, attribute uid { text }
+    }
   | element footnote {
       attribute symbol { text },
       inline.element
@@ -138,20 +143,23 @@ display.table.element =
       & display.align.attribute?
       & display.xref.attribute? ),
     ( ( element head {
-          element column { attribute align { string "left" | string "center" | string "right" }?,
-                           inline.element }+
-        },
+          element column {
+            attribute align { string "left" | string "center" | string "right" }?,
+            inline.element
+          }+ },
         element body { element row { element cell { inline.element }+ }+ } )
       & element caption { inline.element }? )
   }
 display.math.element =
   element math {
-    display.style.attribute?,
+    ( display.style.attribute?
+      & display.xref.attribute? ),
     extern._any.element+
   }
 display.verb.element =
   element verb {
     ( display.style.attribute?
+      & display.xref.attribute?
       & attribute lang { text } ),
     inline.text.element+
   }
