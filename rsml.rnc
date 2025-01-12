@@ -121,8 +121,7 @@ inline.reference.element =
 
 display.list.element =
   element list {
-    ( attribute type { string "enumerate" | string "bullet" | string "description" }
-      & display.xref.attribute? ),
+    attribute type { string "enumerate" | string "bullet" | string "description" },
     element item {
       attribute name { text }?,
       ( inline.element
