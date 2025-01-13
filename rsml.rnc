@@ -12,35 +12,31 @@ extern._any.element =
     ( extern._any.attribute | text | extern._any.element )*
   }
 
-inline.style.attribute =
-  attribute style { string "embed" }
 inline.element =
   ( inline.text.element
     | inline.type.element
     | inline.math.element
-    | inline.verb.element
+    | inline.verbatim.element
     | inline.semantic.element
     | inline.reference.element )*
 
-display.style.attribute =
-  attribute style { string "block" }
 display.geometry.attribute =
   attribute size { xsd:string { pattern = "r\d+(\.\d+)?" } }
 display.align.attribute =
   attribute align { string "left" | string "center" | string "right" }
 display.xref.attribute =
-  attribute uid { text }
+  attribute label { text }
 display.element =
   ( display.list.element
     | display.figure.element
     | display.table.element
     | display.math.element
-    | display.verb.element
+    | display.verbatim.element
     | display.message.element )*
 
 rsml.element =
   element rsml {
-    ( attribute version { xsd:string { pattern = "1.0" } }
+    ( attribute version { string "1.0" }
       & attribute language { xsd:language }? ),
     preamble.element,
     document.element,
@@ -91,14 +87,10 @@ inline.type.element =
   element emphasize { inline.text.element+ }
   | element highlight { inline.text.element+ }
 inline.math.element =
-  element math {
-    inline.style.attribute?,
-    extern._any.element+
-  }
-inline.verb.element =
-  element verb {
-    ( inline.style.attribute?
-      & attribute lang { text } ),
+  element math { extern._any.element+ }
+inline.verbatim.element =
+  element verbatim {
+    attribute lang { text }?,
     inline.text.element+
   }
 inline.semantic.element =
@@ -111,21 +103,21 @@ inline.reference.element =
   | element refer {
       attribute type {
         string "chapter" | string "section" | string "subsection" | string "label" |
-        string "figure" | string "table" | string "math" | string "verb"
-      }, attribute uid { text }
+        string "figure" | string "table" | string "math" | string "verbatim"
+      }, attribute label { text }
     }
   | element footnote {
-      attribute symbol { text },
+      attribute symbol { text }?,
       inline.element
     }
 
 display.list.element =
   element list {
-    attribute type { string "enumerate" | string "bullet" | string "description" },
+    attribute type { string "enumerate" | string "itemize" | string "description" },
     element item {
       attribute name { text }?,
       ( inline.element
-        & display.list.element? )
+        & display.list.element? )+
     }*
   }
 display.figure.element =
@@ -155,14 +147,12 @@ display.table.column.element =
   }+
 display.math.element =
   element math {
-    ( display.style.attribute?
-      & display.xref.attribute? ),
+    display.xref.attribute?,
     extern._any.element+
   }
-display.verb.element =
-  element verb {
-    ( display.style.attribute?
-      & display.xref.attribute?
+display.verbatim.element =
+  element verbatim {
+    ( display.xref.attribute?
       & attribute lang { text } ),
     inline.text.element+
   }
