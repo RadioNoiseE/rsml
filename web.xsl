@@ -172,6 +172,7 @@
             </xsl:variable>
             <a href="#c{$chapter}">
               <span class="unit"><xsl:value-of select="$chapter"/></span>
+              <xsl:text> </xsl:text>
               <span class="content"><xsl:value-of select="rsml:heading"/></span>
             </a>
             <xsl:if test="rsml:unit[@role='section']">
@@ -181,6 +182,7 @@
                 </xsl:variable>
                 <li><a href="#s{translate($section,'.','-')}">
                   <span class="unit"><xsl:value-of select="$section"/></span>
+                  <xsl:text> </xsl:text>
                   <span class="content"><xsl:value-of select="rsml:heading"/></span>
                 </a></li>
               </xsl:for-each></ul>
@@ -472,8 +474,8 @@
           </xsl:choose>
         </xsl:attribute>
         <xsl:if test="@size">
-          <xsl:attribute name="width">
-            <xsl:value-of select="concat(substring-after(@size,'r'),'%')"/>
+          <xsl:attribute name="style">
+            <xsl:value-of select="concat('width:',substring-after(@size,'r'),'%;')"/>
           </xsl:attribute>
         </xsl:if>
       </img>
