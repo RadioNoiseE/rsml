@@ -18,45 +18,77 @@
   <xsl:output method="xml" encoding="utf-8" indent="no"
               omit-xml-declaration="yes"/>
 
-  <xsl:template match="/">
-    <xsl:if test="rsml:rsml/@version>1.0">
-      <xsl:message terminate="yes">This sytlesheet supports only RsML 1.0, terminating...</xsl:message>
-    </xsl:if>
-    <xsl:apply-templates mode="virgin"/>
-  </xsl:template>
-
-  <xsl:template name="verbatim">
-    <xsl:param name="previous"/>
-    <xsl:param name="current"/>
-    <xsl:if test="string-length($current)>0">
-      <xsl:variable name="line" select="substring-before($current,'&#10;')"/>
-      <xsl:variable name="rest" select="substring-after($current,'&#10;')"/>
-      <xsl:if test="string-length(normalize-space($line))>0 or
-                    string-length(normalize-space($rest))>0 and
-                    string-length(normalize-space($previous))>0">
-        <span class="line"><span class="ln">
-          <xsl:text>  </xsl:text>
-          <span class="nsep">|</span>
-          <span class="ld"><code>
-            <xsl:value-of select="$line"/>
-          </code></span>
-        </span></span>
-        <xsl:if test="string-length(normalize-space($rest))>0">
-          <xsl:text>&#10;</xsl:text>
-        </xsl:if>
-      </xsl:if>
-      <xsl:call-template name="verbatim">
-        <xsl:with-param name="previous" select="$line"/>
-        <xsl:with-param name="current" select="$rest"/>
+  <xsl:template name="space">
+    <xsl:param name="width"/>
+    <xsl:if test="$width>0">
+      <xsl:text> </xsl:text>
+      <xsl:call-template name="space">
+        <xsl:with-param name="width" select="-1+$width"/>
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template mode="math" match="*">
-    <xsl:element name="{local-name()}">
-      <xsl:copy-of select="@*"/>
-      <xsl:apply-templates mode="math"/>
-    </xsl:element>
+  <xsl:template name="listing">
+    <xsl:param name="previous"/>
+    <xsl:param name="current"/>
+    <xsl:param name="capacity"/>
+    <xsl:param name="pointer"/>
+    <xsl:if test="string-length($current)>0">
+      <xsl:variable name="before" select="substring-before($current,'&#10;')"/>
+      <xsl:variable name="after" select="substring-after($current,'&#10;')"/>
+      <xsl:variable name="offset">
+        <xsl:choose>
+          <xsl:when test="string-length(normalize-space($before))>0 or
+                          string-length(normalize-space($after))>0 and
+                          string-length(normalize-space($previous))>0">
+            <xsl:value-of select="number(1)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="number(0)"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:if test="$offset=1">
+        <span class="line">
+          <span class="ln">
+            <xsl:choose>
+              <xsl:when test="($pointer mod 5)=0">
+                <xsl:call-template name="space">
+                  <xsl:with-param name="width" select="-(string-length($pointer))+$capacity"/>
+                </xsl:call-template>
+                <xsl:value-of select="$pointer"/>
+                <xsl:text> </xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:call-template name="space">
+                  <xsl:with-param name="width" select="$capacity+1"/>
+                </xsl:call-template>
+              </xsl:otherwise>
+            </xsl:choose>
+            <span class="nsep">|</span>
+          </span>
+          <span class="ld"><code>
+            <xsl:value-of select="$before"/>
+          </code></span>
+        </span>
+        <xsl:if test="string-length(normalize-space($after))>0">
+          <xsl:text>&#10;</xsl:text>
+        </xsl:if>
+      </xsl:if>
+      <xsl:call-template name="listing">
+        <xsl:with-param name="previous" select="$before"/>
+        <xsl:with-param name="current" select="$after"/>
+        <xsl:with-param name="capacity" select="$capacity"/>
+        <xsl:with-param name="pointer" select="$pointer+$offset"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="/">
+    <xsl:if test="rsml:rsml/@version>1.0">
+      <xsl:message terminate="yes">This stylesheet supports only RsML1, terminating...</xsl:message>
+    </xsl:if>
+    <xsl:apply-templates mode="virgin"/>
   </xsl:template>
 
   <xsl:template mode="virgin" match="*">
@@ -87,7 +119,9 @@
     <meta name="creator" content="RsML1"/>
     <xsl:if test="rsml:author">
       <xsl:element name="meta">
-        <xsl:attribute name="name">author</xsl:attribute>
+        <xsl:attribute name="name">
+          <xsl:value-of select="string('author')"/>
+        </xsl:attribute>
         <xsl:attribute name="content">
           <xsl:value-of select="rsml:author"/>
         </xsl:attribute>
@@ -95,21 +129,23 @@
     </xsl:if>
     <xsl:if test="rsml:date">
       <xsl:element name="meta">
-        <xsl:attribute name="name">pubdate</xsl:attribute>
+        <xsl:attribute name="name">
+          <xsl:value-of select="string('pubdate')"/>
+        </xsl:attribute>
         <xsl:attribute name="content">
           <xsl:value-of select="descendant::rsml:year"/>
-          <xsl:if test="descendant::rsml:day">
+          <xsl:if test="descendant::rsml:month and descendant::rsml:day">
             <xsl:value-of select="substring-after(descendant::rsml:month,'-')"/>
-            <xsl:value-of select="substring-after(descendant::rsml:day,'--')"/>
+            <xsl:value-of select="substring-after(descendant::rsml:day,'-')"/>
           </xsl:if>
         </xsl:attribute>
       </xsl:element>
     </xsl:if>
     <title>
-      <xsl:value-of select="rsml:title"/>
+      <xsl:apply-templates mode="horizontal" select="rsml:title"/>
       <xsl:if test="rsml:subtitle">
         <xsl:text> -- </xsl:text>
-        <xsl:value-of select="rsml:subtitle"/>
+        <xsl:apply-templates mode="horizontal" select="rsml:subtitle"/>
       </xsl:if>
     </title>
   </xsl:template>
@@ -125,23 +161,23 @@
           <xsl:text>Published</xsl:text>
           <xsl:if test="rsml:date">
             <xsl:text> on </xsl:text>
-            <xsl:if test="descendant::rsml:day">
+            <xsl:if test="descendant::rsml:month and descendant::rsml:day">
               <xsl:value-of select="translate(descendant::rsml:day,'-','')"/>
               <xsl:text> </xsl:text>
-              <xsl:variable name="month" select="translate(descendant::rsml:month,'-','')"/>
+              <xsl:variable name="month" select="number(translate(descendant::rsml:month,'-',''))"/>
               <xsl:choose>
-                <xsl:when test="$month='01'">January</xsl:when>
-                <xsl:when test="$month='02'">February</xsl:when>
-                <xsl:when test="$month='03'">March</xsl:when>
-                <xsl:when test="$month='04'">April</xsl:when>
-                <xsl:when test="$month='05'">May</xsl:when>
-                <xsl:when test="$month='06'">June</xsl:when>
-                <xsl:when test="$month='07'">July</xsl:when>
-                <xsl:when test="$month='08'">August</xsl:when>
-                <xsl:when test="$month='09'">September</xsl:when>
-                <xsl:when test="$month='10'">October</xsl:when>
-                <xsl:when test="$month='11'">November</xsl:when>
-                <xsl:when test="$month='12'">December</xsl:when>
+                <xsl:when test="$month=1">January</xsl:when>
+                <xsl:when test="$month=2">February</xsl:when>
+                <xsl:when test="$month=3">March</xsl:when>
+                <xsl:when test="$month=4">April</xsl:when>
+                <xsl:when test="$month=5">May</xsl:when>
+                <xsl:when test="$month=6">June</xsl:when>
+                <xsl:when test="$month=7">July</xsl:when>
+                <xsl:when test="$month=8">August</xsl:when>
+                <xsl:when test="$month=9">September</xsl:when>
+                <xsl:when test="$month=10">October</xsl:when>
+                <xsl:when test="$month=11">November</xsl:when>
+                <xsl:when test="$month=12">December</xsl:when>
               </xsl:choose>
               <xsl:text> </xsl:text>
             </xsl:if>
@@ -163,7 +199,7 @@
           <xsl:apply-templates mode="horizontal" select="rsml:abstract"/>
         </p></div>
       </xsl:if>
-      <nav id="contents">
+      <nav id="lot">
         <h2>Table of Contents</h2>
         <div class="toc"><ul class="toc">
           <xsl:for-each select="//rsml:unit[@role='chapter']"><li>
@@ -171,9 +207,9 @@
               <xsl:number count="rsml:unit[@role='chapter']" format="1"/>
             </xsl:variable>
             <a href="#c{$chapter}">
-              <span class="unit"><xsl:value-of select="$chapter"/></span>
+              <span class="label"><xsl:value-of select="$chapter"/></span>
               <xsl:text> </xsl:text>
-              <span class="content"><xsl:value-of select="rsml:heading"/></span>
+              <span class="title"><xsl:value-of select="rsml:heading"/></span>
             </a>
             <xsl:if test="rsml:unit[@role='section']">
               <ul class="toc"><xsl:for-each select="rsml:unit[@role='section']">
@@ -181,9 +217,9 @@
                   <xsl:number level="multiple" count="rsml:unit[@role='chapter' or @role='section']" format="1.1"/>
                 </xsl:variable>
                 <li><a href="#s{translate($section,'.','-')}">
-                  <span class="unit"><xsl:value-of select="$section"/></span>
+                  <span class="label"><xsl:value-of select="$section"/></span>
                   <xsl:text> </xsl:text>
-                  <span class="content"><xsl:value-of select="rsml:heading"/></span>
+                  <span class="title"><xsl:value-of select="rsml:heading"/></span>
                 </a></li>
               </xsl:for-each></ul>
             </xsl:if>
@@ -194,7 +230,7 @@
   </xsl:template>
 
   <xsl:template mode="initial" match="rsml:unit">
-    <xsl:apply-templates mode="vertical" select="node()"/>
+    <xsl:apply-templates mode="vertical"/>
   </xsl:template>
 
   <xsl:template mode="initial" match="rsml:bibliography">
@@ -212,54 +248,52 @@
   </xsl:template>
 
   <xsl:template mode="appendix" match="rsml:rsml">
-    <div class="footnote">
+    <div class="footnotes">
+      <hr/>
       <xsl:for-each select="//rsml:footnote">
-        <xsl:variable name="symbol" select="@symbol"/>
-        <xsl:choose>
-          <xsl:when test="$symbol">
-            <sup><a id="f{generate-id($symbol)}">
-              <xsl:value-of select="$symbol"/>
-            </a></sup>
-            <xsl:text> </xsl:text>
-            <xsl:apply-templates mode="horizontal"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:variable name="label">
-              <xsl:number count="//rsml:footnote" format="1"/>
-            </xsl:variable>
-            <sup><a id="f{$label}">
-              <xsl:value-of select="$label"/>
-            </a></sup>
-            <xsl:text> </xsl:text>
-            <xsl:apply-templates mode="horizontal"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <div class="footnote">
+          <xsl:variable name="symbol" select="@symbol"/>
+          <xsl:variable name="label">
+            <xsl:number count="rsml:footnote" format="1"/>
+          </xsl:variable>
+          <sup><a id="f{$label}">
+            <xsl:choose>
+              <xsl:when test="$symbol">
+                <xsl:value-of select="$symbol"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$label"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </a></sup>
+          <xsl:text> </xsl:text>
+          <xsl:apply-templates mode="horizontal"/>
+        </div>
       </xsl:for-each>
     </div>
   </xsl:template>
 
-  <xsl:template mode="horizontal" match="rsml:quote">
-    <xsl:text>&quot;</xsl:text>
-  </xsl:template>
-
-  <xsl:template mode="horizontal" match="rsml:apostrophe">
-    <xsl:text>&apos;</xsl:text>
-  </xsl:template>
-
-  <xsl:template mode="horizontal" match="rsml:ampersand">
-    <xsl:text>&amp;</xsl:text>
-  </xsl:template>
-
-  <xsl:template mode="horizontal" match="rsml:langle">
-    <xsl:text>&lt;</xsl:text>
-  </xsl:template>
-
-  <xsl:template mode="horizontal" match="rsml:rangle">
-    <xsl:text>&gt;</xsl:text>
-  </xsl:template>
-
-  <xsl:template mode="horizontal" match="rsml:space">
-    <xsl:text>&#160;</xsl:text>
+  <xsl:template mode="horizontal" match="*">
+    <xsl:choose>
+      <xsl:when test="local-name()='quote'">
+        <xsl:text>&quot;</xsl:text>
+      </xsl:when>
+      <xsl:when test="local-name()='apostrophe'">
+        <xsl:text>&apos;</xsl:text>
+      </xsl:when>
+      <xsl:when test="local-name()='ampersand'">
+        <xsl:text>&amp;</xsl:text>
+      </xsl:when>
+      <xsl:when test="local-name()='langle'">
+        <xsl:text>&lt;</xsl:text>
+      </xsl:when>
+      <xsl:when test="local-name()='rangle'">
+        <xsl:text>&gt;</xsl:text>
+      </xsl:when>
+      <xsl:when test="local-name()=space">
+        <xsl:text>&#160;</xsl:text>
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:emphasize">
@@ -271,7 +305,7 @@
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:math">
-    <math display="inline"><xsl:apply-templates mode="math" select="node()"/></math>
+    <math display="inline"><xsl:apply-templates mode="math"/></math>
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:verbatim">
@@ -298,7 +332,7 @@
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:label">
-    <a href="l{generate-id()}"/>
+    <a id="l{generate-id()}"/>
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:refer">
@@ -325,7 +359,7 @@
       </xsl:when>
       <xsl:when test="$type='label'">
         <xsl:variable name="xref">
-          <xsl:value-of select="generate-id($label)"/>
+          <xsl:apply-templates mode="crossref" select="//rsml:label[@label=$label]"/>
         </xsl:variable>
         <a href="#l{$xref}">
           <xsl:text>Label </xsl:text>
@@ -355,13 +389,13 @@
           <xsl:apply-templates mode="crossref" select="//rsml:math[@label=$label]"/>
         </xsl:variable>
         <a href="#m{translate($xref,'.','-')}">
-          <xsl:text>Equation </xsl:text>
+          <xsl:text>Math </xsl:text>
           <xsl:value-of select="$xref"/>
         </a>
       </xsl:when>
       <xsl:when test="$type='verbatim'">
         <xsl:variable name="xref">
-          <xsl:apply-templates mode="crossref" select="//rsml:verb[@label=$label]"/>
+          <xsl:apply-templates mode="crossref" select="//rsml:verbatim[@label=$label]"/>
         </xsl:variable>
         <a href="#v{translate($xref,'.','-')}">
           <xsl:text>Verbatim </xsl:text>
@@ -373,43 +407,41 @@
 
   <xsl:template mode="horizontal" match="rsml:footnote">
     <xsl:variable name="symbol" select="@symbol"/>
-    <xsl:choose>
-      <xsl:when test="$symbol">
-        <sup><a href="#f{generate-id($symbol)}">
+    <xsl:variable name="label">
+      <xsl:number count="rsml:footnote" format="1"/>
+    </xsl:variable>
+    <sup><a href="#f{$label}">
+      <xsl:choose>
+        <xsl:when test="$symbol">
           <xsl:value-of select="$symbol"/>
-        </a></sup>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="label">
-          <xsl:number count="//rsml:footnote" format="1"/>
-        </xsl:variable>
-        <sup><a href="#f{$label}">
+        </xsl:when>
+        <xsl:otherwise>
           <xsl:value-of select="$label"/>
-        </a></sup>
-      </xsl:otherwise>
-    </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+    </a></sup>
   </xsl:template>
 
   <xsl:template mode="vertical" match="rsml:heading">
-    <xsl:variable name="level" select="parent::rsml:unit/@role"/>
+    <xsl:variable name="type" select="parent::rsml:unit/@role"/>
     <xsl:choose>
-      <xsl:when test="$level='chapter'">
-        <xsl:variable name="chapter">
+      <xsl:when test="$type='chapter'">
+        <xsl:variable name="xref">
           <xsl:number count="rsml:unit[@role='chapter']" format="1"/>
         </xsl:variable>
-        <h2 id="c{$chapter}"><xsl:apply-templates mode="horizontal"/></h2>
+        <h2 id="c{$xref}"><xsl:apply-templates mode="horizontal"/></h2>
       </xsl:when>
-      <xsl:when test="$level='section'">
-        <xsl:variable name="section">
+      <xsl:when test="$type='section'">
+        <xsl:variable name="xref">
           <xsl:number level="multiple" count="rsml:unit[@role='chapter' or @role='section']" format="1-1"/>
         </xsl:variable>
-        <h3 id="s{$section}"><xsl:apply-templates mode="horizontal"/></h3>
+        <h3 id="s{$xref}"><xsl:apply-templates mode="horizontal"/></h3>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="subsection">
+        <xsl:variable name="xref">
           <xsl:number level="multiple" count="rsml:unit[@role='chapter' or @role='section' or @role='subsection']" format="1-1-1"/>
         </xsl:variable>
-        <h4 id="z{$subsection}"><xsl:apply-templates mode="horizontal"/></h4>
+        <h4 id="z{$xref}"><xsl:apply-templates mode="horizontal"/></h4>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -422,24 +454,137 @@
     <xsl:variable name="type" select="@type"/>
     <xsl:choose>
       <xsl:when test="$type='enumerate'">
-        <ol><xsl:apply-templates mode="inner" select=".">
+        <ol><xsl:apply-templates mode="restricted" select=".">
           <xsl:with-param name="type" select="$type"/>
         </xsl:apply-templates></ol>
       </xsl:when>
       <xsl:when test="$type='itemize'">
-        <ul><xsl:apply-templates mode="inner" select=".">
+        <ul><xsl:apply-templates mode="restricted" select=".">
           <xsl:with-param name="type" select="$type"/>
         </xsl:apply-templates></ul>
       </xsl:when>
       <xsl:otherwise>
-        <dl><xsl:apply-templates mode="inner" select=".">
+        <dl><xsl:apply-templates mode="restricted" select=".">
           <xsl:with-param name="type" select="$type"/>
         </xsl:apply-templates></dl>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template mode="inner" match="rsml:list">
+  <xsl:template mode="vertical" match="rsml:figure">
+    <figure>
+      <xsl:if test="@label">
+        <xsl:variable name="xref">
+          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:figure" format="1-1"/>
+        </xsl:variable>
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('f',$xref)"/>
+        </xsl:attribute>
+      </xsl:if>
+      <img src="{rsml:image}" alt="{normalize-space(rsml:image)}">
+        <xsl:attribute name="class">
+          <xsl:choose>
+            <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="string('center')"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@size">
+          <xsl:attribute name="style">
+            <xsl:value-of select="concat('width:',substring-after(@size,'r'),'%;')"/>
+          </xsl:attribute>
+        </xsl:if>
+      </img>
+      <xsl:if test="rsml:caption">
+        <figcaption><xsl:apply-templates mode="horizontal" select="rsml:caption"/></figcaption>
+      </xsl:if>
+    </figure>
+  </xsl:template>
+
+  <xsl:template mode="vertical" match="rsml:table">
+    <table>
+      <xsl:if test="@label">
+        <xsl:variable name="xref">
+          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:table" format="1-1"/>
+        </xsl:variable>
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('t',$xref)"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:attribute name="class">
+        <xsl:choose>
+          <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="string('center')"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:if test="rsml:caption">
+        <caption><xsl:apply-templates mode="horizontal" select="rsml:caption"/></caption>
+      </xsl:if>
+      <xsl:if test="rsml:head">
+        <thead><xsl:apply-templates mode="restricted" select=".">
+          <xsl:with-param name="type" select="rsml:head"/>
+        </xsl:apply-templates></thead>
+      </xsl:if>
+      <tbody><xsl:apply-templates mode="restricted" select=".">
+        <xsl:with-param name="type" select="rsml:body"/>
+      </xsl:apply-templates></tbody>
+      <xsl:if test="rsml:foot">
+        <tfoot><xsl:apply-templates mode="restricted" select=".">
+          <xsl:with-param name="type" select="rsml:foot"/>
+        </xsl:apply-templates></tfoot>
+      </xsl:if>
+    </table>
+  </xsl:template>
+
+  <xsl:template mode="vertical" match="rsml:math">
+    <math display="block">
+      <xsl:if test="@label">
+        <xsl:variable name="xref">
+          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:math" format="1-1"/>
+        </xsl:variable>
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('m',$xref)"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates mode="restricted"/>
+    </math>
+  </xsl:template>
+
+  <xsl:template mode="vertical" match="rsml:verbatim">
+    <pre>
+      <xsl:if test="@label">
+        <xsl:variable name="xref">
+          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:verbatim" format="1-1"/>
+        </xsl:variable>
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('v',$xref)"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="listing">
+        <xsl:with-param name="current" select="text()"/>
+        <xsl:with-param name="capacity" select="string-length(@line)"/>
+        <xsl:with-param name="pointer" select="1"/>
+      </xsl:call-template>
+    </pre>
+  </xsl:template>
+
+  <xsl:template mode="vertical" match="rsml:message">
+    <div class="{@type}"><p>
+      <xsl:apply-templates mode="horizontal"/>
+    </p></div>
+  </xsl:template>
+
+  <xsl:template mode="restricted" match="*">
+    <xsl:element name="{local-name()}">
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates mode="math"/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template mode="restricted" match="rsml:list">
     <xsl:param name="type"/>
     <xsl:choose>
       <xsl:when test="$type='description'">
@@ -456,75 +601,7 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template mode="vertical" match="rsml:figure">
-    <figure>
-      <xsl:if test="@label">
-        <xsl:variable name="xref">
-          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:figure" format="1-1"/>
-        </xsl:variable>
-        <xsl:attribute name="id">
-          <xsl:value-of select="concat('f',$xref)"/>
-        </xsl:attribute>
-      </xsl:if>
-      <img src="{rsml:image}" alt="{rsml:image}">
-        <xsl:attribute name="class">
-          <xsl:choose>
-            <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-            <xsl:otherwise>center</xsl:otherwise>
-          </xsl:choose>
-        </xsl:attribute>
-        <xsl:if test="@size">
-          <xsl:attribute name="style">
-            <xsl:value-of select="concat('width:',substring-after(@size,'r'),'%;')"/>
-          </xsl:attribute>
-        </xsl:if>
-      </img>
-      <xsl:if test="rsml:caption">
-        <figcaption><xsl:apply-templates mode="horizontal" select="rsml:caption"/></figcaption>
-      </xsl:if>
-    </figure>
-  </xsl:template>
-
-  <xsl:template mode="crossref" match="rsml:figure">
-    <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:figure" format="1.1"/>
-  </xsl:template>
-
-  <xsl:template mode="vertical" match="rsml:table">
-    <table>
-      <xsl:if test="@label">
-        <xsl:variable name="xref">
-          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:table" format="1-1"/>
-        </xsl:variable>
-        <xsl:attribute name="id">
-          <xsl:value-of select="concat('t',$xref)"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:attribute name="class">
-        <xsl:choose>
-          <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-          <xsl:otherwise>center</xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-      <xsl:if test="rsml:caption">
-        <caption><xsl:apply-templates mode="horizontal" select="rsml:caption"/></caption>
-      </xsl:if>
-      <xsl:if test="rsml:head">
-        <thead><xsl:apply-templates mode="inner" select=".">
-          <xsl:with-param name="type" select="rsml:head"/>
-        </xsl:apply-templates></thead>
-      </xsl:if>
-      <tbody><xsl:apply-templates mode="inner" select=".">
-        <xsl:with-param name="type" select="rsml:body"/>
-      </xsl:apply-templates></tbody>
-      <xsl:if test="rsml:foot">
-        <tfoot><xsl:apply-templates mode="inner" select=".">
-          <xsl:with-param name="type" select="rsml:foot"/>
-        </xsl:apply-templates></tfoot>
-      </xsl:if>
-    </table>
-  </xsl:template>
-
-  <xsl:template mode="inner" match="rsml:table">
+  <xsl:template mode="restricted" match="rsml:table">
     <xsl:param name="type"/>
     <xsl:for-each select="$type/rsml:column">
       <tr>
@@ -547,52 +624,24 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template mode="crossref" match="rsml:table">
-    <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:table" format="1.1"/>
+  <xsl:template mode="crossref" match="rsml:label">
+    <xsl:number count="rsml:label" format="1"/>
   </xsl:template>
 
-  <xsl:template mode="vertical" match="rsml:math">
-    <math display="block">
-      <xsl:if test="@label">
-        <xsl:variable name="xref">
-          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:math" format="1-1"/>
-        </xsl:variable>
-        <xsl:attribute name="id">
-          <xsl:value-of select="concat('m',$xref)"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:apply-templates mode="math" select="node()"/>
-    </math>
+  <xsl:template mode="crossref" match="rsml:figure">
+    <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:figure" format="1.1"/>
+  </xsl:template>
+
+  <xsl:template mode="crossref" match="rsml:table">
+    <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:table" format="1.1"/>
   </xsl:template>
 
   <xsl:template mode="crossref" match="rsml:math">
     <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:math" format="1.1"/>
   </xsl:template>
 
-  <xsl:template mode="vertical" match="rsml:verbatim">
-    <pre>
-      <xsl:if test="@label">
-        <xsl:variable name="xref">
-          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:verbatim" format="1-1"/>
-        </xsl:variable>
-        <xsl:attribute name="id">
-          <xsl:value-of select="concat('v',$xref)"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:call-template name="verbatim">
-        <xsl:with-param name="current" select="text()"/>
-      </xsl:call-template>
-    </pre>
-  </xsl:template>
-
   <xsl:template mode="crossref" match="rsml:verbatim">
     <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:verbatim" format="1.1"/>
-  </xsl:template>
-
-  <xsl:template mode="vertical" match="rsml:message">
-    <div class="{@type}"><p>
-      <xsl:apply-templates mode="horizontal"/>
-    </p></div>
   </xsl:template>
 
 </xsl:stylesheet>
