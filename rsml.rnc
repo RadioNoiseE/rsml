@@ -153,7 +153,8 @@ display.math.element =
 display.verbatim.element =
   element verbatim {
     ( display.xref.attribute?
-      & attribute lang { text } ),
+      & attribute lang { text }?
+      & attribute line { xsd:unsignedInt } ),
     inline.text.element+
   }
 display.message.element =
