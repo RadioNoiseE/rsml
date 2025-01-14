@@ -589,4 +589,10 @@
     <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:verbatim" format="1.1"/>
   </xsl:template>
 
+  <xsl:template mode="vertical" match="rsml:message">
+    <div class="{@type}"><p>
+      <xsl:apply-templates mode="horizontal"/>
+    </p></div>
+  </xsl:template>
+
 </xsl:stylesheet>
