@@ -142,10 +142,10 @@
       </xsl:element>
     </xsl:if>
     <title>
-      <xsl:apply-templates mode="horizontal" select="rsml:title"/>
+      <xsl:value-of select="rsml:title"/>
       <xsl:if test="rsml:subtitle">
         <xsl:text> -- </xsl:text>
-        <xsl:apply-templates mode="horizontal" select="rsml:subtitle"/>
+        <xsl:value-of select="rsml:subtitle"/>
       </xsl:if>
     </title>
   </xsl:template>
@@ -273,7 +273,8 @@
     </div>
   </xsl:template>
 
-  <xsl:template mode="horizontal" match="*">
+  <xsl:template mode="horizontal" match="rsml:quote|rsml:apostrophe|rsml:ampersand|
+                                         rsml:langle|rsml:rangle|rsml:space">
     <xsl:variable name="type">
       <xsl:value-of select="local-name()"/>
     </xsl:variable>
