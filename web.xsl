@@ -248,29 +248,31 @@
   </xsl:template>
 
   <xsl:template mode="appendix" match="rsml:rsml">
-    <div class="footnotes">
-      <hr/>
-      <xsl:for-each select="//rsml:footnote">
-        <div class="footnote">
-          <xsl:variable name="symbol" select="@symbol"/>
-          <xsl:variable name="label">
-            <xsl:number count="rsml:footnote" format="1"/>
-          </xsl:variable>
-          <sup><a id="f{$label}">
-            <xsl:choose>
-              <xsl:when test="$symbol">
-                <xsl:value-of select="$symbol"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$label"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </a></sup>
-          <xsl:text> </xsl:text>
-          <xsl:apply-templates mode="horizontal"/>
-        </div>
-      </xsl:for-each>
-    </div>
+    <xsl:if test="//rsml:footnote">
+      <div class="footnotes">
+        <hr/>
+        <xsl:for-each select="//rsml:footnote">
+          <div class="footnote">
+            <xsl:variable name="symbol" select="@symbol"/>
+            <xsl:variable name="label">
+              <xsl:number count="rsml:footnote" format="1"/>
+            </xsl:variable>
+            <sup><a id="f{$label}">
+              <xsl:choose>
+                <xsl:when test="$symbol">
+                  <xsl:value-of select="$symbol"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$label"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </a></sup>
+            <xsl:text> </xsl:text>
+            <xsl:apply-templates mode="horizontal"/>
+          </div>
+        </xsl:for-each>
+      </div>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:quote|rsml:apostrophe|rsml:ampersand|
@@ -294,7 +296,7 @@
       <xsl:when test="$type='rangle'">
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
-      <xsl:when test="$type=space">
+      <xsl:when test="$type='space'">
         <xsl:text>&#160;</xsl:text>
       </xsl:when>
     </xsl:choose>
