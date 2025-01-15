@@ -608,9 +608,10 @@
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:for-each select="rsml:item">
-          <li><xsl:apply-templates mode="horizontal"/></li>
-        </xsl:for-each>
+        <xsl:for-each select="rsml:item"><li>
+          <xsl:apply-templates mode="horizontal"/>
+          <xsl:apply-templates mode="vertical"/>
+        </li></xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
