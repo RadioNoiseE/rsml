@@ -311,7 +311,7 @@
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:math">
-    <math display="inline"><xsl:apply-templates mode="math"/></math>
+    <math display="inline"><xsl:apply-templates mode="restricted"/></math>
   </xsl:template>
 
   <xsl:template mode="horizontal" match="rsml:verbatim">
@@ -345,6 +345,7 @@
     <xsl:variable name="xref">
       <xsl:number count="rsml:label" format="1"/>
     </xsl:variable>
+    <xsl:value-of select="text()"/>
     <a id="l{$xref}"/>
   </xsl:template>
 
@@ -593,7 +594,7 @@
   <xsl:template mode="restricted" match="*">
     <xsl:element name="{local-name()}">
       <xsl:copy-of select="@*"/>
-      <xsl:apply-templates mode="math"/>
+      <xsl:apply-templates mode="restricted"/>
     </xsl:element>
   </xsl:template>
 
