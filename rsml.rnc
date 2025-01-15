@@ -98,7 +98,7 @@ inline.semantic.element =
   | element abbreviation { inline.text.element+ }
   | element keyword { inline.text.element+ }
 inline.reference.element =
-  element link { attribute literal { text }, xsd:anyURI }
+  element link { attribute literal { text }?, xsd:anyURI }
   | element label { text }
   | element refer {
       attribute type {
