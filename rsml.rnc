@@ -1,7 +1,7 @@
 # RelaxNG Compact Schema Specification for RsML 1.0
 # Copyright (C) 2025, Jing Huang <RadioNoiseE@gmail.com>
 
-default namespace rsml = "file://fake.path/2025/Markup/RsML"
+default namespace rsml = "https://kekkan.org/RsML"
 namespace mml = "http://www.w3.org/1998/Math/MathML"
 
 start = rsml.element
