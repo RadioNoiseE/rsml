@@ -289,13 +289,13 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template mode="horizontal" match="rsml:quote|rsml:apostrophe|rsml:ampersand|
+  <xsl:template mode="horizontal" match="rsml:quotation|rsml:apostrophe|rsml:ampersand|
                                          rsml:langle|rsml:rangle|rsml:space">
     <xsl:variable name="type">
       <xsl:value-of select="local-name()"/>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="$type='quote'">
+      <xsl:when test="$type='quotation'">
         <xsl:text>&quot;</xsl:text>
       </xsl:when>
       <xsl:when test="$type='apostrophe'">

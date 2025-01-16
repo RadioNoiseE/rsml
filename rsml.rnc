@@ -78,7 +78,7 @@ postamble.element =
 
 inline.text.element =
   text
-  | element quote { empty }
+  | element quotation { empty }
   | element apostrophe { empty }
   | element ampersand { empty }
   | element langle { empty }
