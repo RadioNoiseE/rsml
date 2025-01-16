@@ -344,6 +344,10 @@
     <span class="keyword"><xsl:apply-templates mode="horizontal"/></span>
   </xsl:template>
 
+  <xsl:template mode="horizontal" match="rsml:quote">
+    <q><xsl:apply-templates mode="horizontal"/></q>
+  </xsl:template>
+
   <xsl:template mode="horizontal" match="rsml:link">
     <a href="{text()}"><xsl:choose>
       <xsl:when test="@literal">
@@ -602,6 +606,17 @@
         <xsl:with-param name="pointer" select="1"/>
       </xsl:call-template>
     </pre>
+  </xsl:template>
+
+  <xsl:template mode="vertical" match="rsml:quote">
+    <backquote>
+      <xsl:if test="@cite">
+        <xsl:attribute name="cite">
+          <xsl:value-of select="@cite"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates mode="horizontal"/>
+    </backquote>
   </xsl:template>
 
   <xsl:template mode="vertical" match="rsml:message">
