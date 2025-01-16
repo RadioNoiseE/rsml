@@ -32,6 +32,7 @@ display.element =
     | display.table.element
     | display.math.element
     | display.verbatim.element
+    | display.quote.element
     | display.message.element )*
 
 rsml.element =
@@ -101,6 +102,7 @@ inline.semantic.element =
   element term { inline.text.element+ }
   | element abbreviation { inline.text.element+ }
   | element keyword { inline.text.element+ }
+  | element quote { inline.text.element+ }
 inline.reference.element =
   element link { attribute literal { text }?, xsd:anyURI }
   | element label { text }
@@ -162,6 +164,11 @@ display.verbatim.element =
       & attribute lang { text }?
       & attribute line { xsd:unsignedInt } ),
     inline.text.element+
+  }
+display.quote.element =
+  element quote {
+    attribute cite { text }?,
+    inline.element
   }
 display.message.element =
   element message {
