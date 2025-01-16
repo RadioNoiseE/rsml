@@ -609,14 +609,14 @@
   </xsl:template>
 
   <xsl:template mode="vertical" match="rsml:quote">
-    <backquote>
+    <blockquote>
       <xsl:if test="@cite">
         <xsl:attribute name="cite">
           <xsl:value-of select="@cite"/>
         </xsl:attribute>
       </xsl:if>
       <xsl:apply-templates mode="horizontal"/>
-    </backquote>
+    </blockquote>
   </xsl:template>
 
   <xsl:template mode="vertical" match="rsml:message">
