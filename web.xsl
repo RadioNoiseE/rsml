@@ -84,6 +84,20 @@
     </xsl:if>
   </xsl:template>
 
+  <xsl:template name="basename">
+    <xsl:param name="uri"/>
+    <xsl:choose>
+      <xsl:when test="contains($uri,'/')">
+        <xsl:call-template name="basename">
+          <xsl:with-param name="uri" select="substring-after($uri,'/')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$uri"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="/">
     <xsl:if test="rsml:rsml/@version>1.0">
       <xsl:message terminate="yes">This stylesheet supports only RsML1, terminating...</xsl:message>
@@ -495,7 +509,12 @@
           <xsl:value-of select="concat('f',$xref)"/>
         </xsl:attribute>
       </xsl:if>
-      <img src="{rsml:image}" alt="{rsml:image}">
+      <xsl:variable name="image">
+        <xsl:call-template name="basename">
+          <xsl:with-param name="uri" select="rsml:image"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <img src="{rsml:image}" alt="{$image}">
         <xsl:attribute name="class">
           <xsl:choose>
             <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
