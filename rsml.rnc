@@ -87,7 +87,11 @@ inline.type.element =
   element emphasize { inline.text.element+ }
   | element highlight { inline.text.element+ }
 inline.math.element =
-  element math { extern._any.element+ }
+  element math {
+    extern._any.attribute?,
+    ( extern._any.element+
+      | inline.text.element+ )*
+  }
 inline.verbatim.element =
   element verbatim {
     attribute lang { text }?,
@@ -148,7 +152,9 @@ display.table.column.element =
 display.math.element =
   element math {
     display.xref.attribute?,
-    extern._any.element+
+    extern._any.attribute?,
+    ( extern._any.element+
+      | inline.text.element+ )*
   }
 display.verbatim.element =
   element verbatim {

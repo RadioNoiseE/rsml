@@ -495,7 +495,7 @@
           <xsl:value-of select="concat('f',$xref)"/>
         </xsl:attribute>
       </xsl:if>
-      <img src="{rsml:image}" alt="{normalize-space(rsml:image)}">
+      <img src="{rsml:image}" alt="{rsml:image}">
         <xsl:attribute name="class">
           <xsl:choose>
             <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
