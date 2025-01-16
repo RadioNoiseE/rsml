@@ -609,8 +609,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:for-each select="rsml:item"><li>
-          <xsl:apply-templates mode="horizontal"/>
-          <xsl:apply-templates mode="vertical"/>
+          <xsl:apply-templates mode="unbound"/>
         </li></xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -637,6 +636,20 @@
         </xsl:for-each>
       </tr>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template mode="unbound" match="*">
+    <xsl:variable name="type">
+      <xsl:value-of select="local-name()"/>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$type='list'">
+        <xsl:apply-templates mode="vertical" select="."/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates mode="horizontal" select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template mode="crossref" match="rsml:label">

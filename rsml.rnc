@@ -118,7 +118,7 @@ display.list.element =
       attribute name { text }?,
       ( inline.element
         & display.list.element? )+
-    }*
+    }+
   }
 display.figure.element =
   element figure {
