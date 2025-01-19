@@ -162,6 +162,7 @@
         <xsl:value-of select="rsml:subtitle"/>
       </xsl:if>
     </title>
+    <link href="/style/rsml.css" rel="stylesheet"/>
   </xsl:template>
 
   <xsl:template mode="initial" match="rsml:meta">
