@@ -462,19 +462,31 @@
         <xsl:variable name="xref">
           <xsl:number count="rsml:unit[@role='chapter']" format="1"/>
         </xsl:variable>
-        <h2 id="c{$xref}"><xsl:apply-templates mode="horizontal"/></h2>
+        <h2 id="c{$xref}">
+          <xsl:value-of select="$xref"/>
+          <xsl:text>. </xsl:text>
+          <xsl:apply-templates mode="horizontal"/>
+        </h2>
       </xsl:when>
       <xsl:when test="$type='section'">
         <xsl:variable name="xref">
           <xsl:number level="multiple" count="rsml:unit[@role='chapter' or @role='section']" format="1-1"/>
         </xsl:variable>
-        <h3 id="s{$xref}"><xsl:apply-templates mode="horizontal"/></h3>
+        <h3 id="s{$xref}">
+          <xsl:value-of select="translate($xref,'-','.')"/>
+          <xsl:text>. </xsl:text>
+          <xsl:apply-templates mode="horizontal"/>
+        </h3>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="xref">
           <xsl:number level="multiple" count="rsml:unit[@role='chapter' or @role='section' or @role='subsection']" format="1-1-1"/>
         </xsl:variable>
-        <h4 id="z{$xref}"><xsl:apply-templates mode="horizontal"/></h4>
+        <h4 id="z{$xref}">
+          <xsl:value-of select="translate($xref,'-','.')"/>
+          <xsl:text>. </xsl:text>
+          <xsl:apply-templates mode="horizontal"/>
+        </h4>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
