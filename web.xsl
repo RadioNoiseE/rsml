@@ -68,7 +68,14 @@
             <span class="nsep">|</span>
           </span>
           <span class="ld"><code>
-            <xsl:value-of select="$before"/>
+            <xsl:choose>
+              <xsl:when test="normalize-space($before)=''">
+                <xsl:text> </xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$before"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </code></span>
         </span>
         <xsl:if test="string-length(normalize-space($after))>0">
