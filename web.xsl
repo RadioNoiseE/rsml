@@ -448,7 +448,7 @@
   <xsl:template mode="horizontal" match="rsml:footnote">
     <xsl:variable name="symbol" select="@symbol"/>
     <xsl:variable name="label">
-      <xsl:number count="rsml:footnote" format="1"/>
+      <xsl:number level="any" count="rsml:footnote" format="1"/>
     </xsl:variable>
     <sup><a href="#f{$label}">
       <xsl:choose>
