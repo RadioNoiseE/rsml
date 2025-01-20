@@ -223,7 +223,7 @@
       </xsl:if>
       <nav id="lot">
         <h2>Table of Contents</h2>
-        <div class="toc"><ul class="toc">
+        <div class="toc"><ul>
           <xsl:for-each select="//rsml:unit[@role='chapter']"><li>
             <xsl:variable name="chapter">
               <xsl:number count="rsml:unit[@role='chapter']" format="1"/>
