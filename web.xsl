@@ -174,9 +174,9 @@
 
   <xsl:template mode="initial" match="rsml:meta">
     <div class="header">
-      <h1><xsl:apply-templates mode="horizontal" select="rsml:title"/></h1>
+      <h1 class="title"><xsl:apply-templates mode="horizontal" select="rsml:title"/></h1>
       <xsl:if test="rsml:subtitle">
-        <h2><xsl:apply-templates mode="horizontal" select="rsml:subtitle"/></h2>
+        <h2 class="subtitle"><xsl:apply-templates mode="horizontal" select="rsml:subtitle"/></h2>
       </xsl:if>
       <xsl:if test="rsml:author or rsml:date">
         <div class="status"><p>
