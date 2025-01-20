@@ -277,7 +277,7 @@
           <div class="footnote">
             <xsl:variable name="symbol" select="@symbol"/>
             <xsl:variable name="label">
-              <xsl:number count="rsml:footnote" format="1"/>
+              <xsl:number level="any" count="rsml:footnote" format="1"/>
             </xsl:variable>
             <sup><a id="f{$label}">
               <xsl:choose>
