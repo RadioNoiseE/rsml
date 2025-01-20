@@ -279,7 +279,7 @@
             <xsl:variable name="label">
               <xsl:number level="any" count="rsml:footnote" format="1"/>
             </xsl:variable>
-            <sup><a id="f{$label}">
+            <div class="footno"><sup><a id="f{$label}">
               <xsl:choose>
                 <xsl:when test="$symbol">
                   <xsl:value-of select="$symbol"/>
@@ -288,9 +288,11 @@
                   <xsl:value-of select="$label"/>
                 </xsl:otherwise>
               </xsl:choose>
-            </a></sup>
-            <xsl:text> </xsl:text>
-            <xsl:apply-templates mode="horizontal"/>
+            </a></sup></div>
+            <div class="footbody">
+              <xsl:text> </xsl:text>
+              <xsl:apply-templates mode="horizontal"/>
+            </div>
           </div>
         </xsl:for-each>
       </div>
