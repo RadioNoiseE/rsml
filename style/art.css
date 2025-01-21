@@ -34,16 +34,16 @@ body {
 
 @media only screen and (min-width: 84em) {
     body {
-        margin-left: calc((100% - 48em)/2);
+        margin-left: calc(50vw - 24em);
     }
 
     #lot {
         font-size: 14px;
-        left: 1.4%;
+        left: 1.4vw;
         max-height: 100vh;
         overflow-y: auto;
         position: fixed;
-        top: 6%;
+        top: 6vh;
         user-select: none;
         -webkit-user-select: none;
         width: 16em;
