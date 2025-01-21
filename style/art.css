@@ -25,11 +25,13 @@ body {
     text-align: center;
 }
 
+.status {
+    font-family: LAT-MS, monospace;
+}
+
 .status,
 .abstract {
-    border-left: 1.6px dashed;
-    margin-left: calc(-.4em + -1.6px);
-    padding-left: .4em;
+    margin: 0 2.4em;
 }
 
 @media only screen and (min-width: 84em) {
@@ -111,13 +113,13 @@ mark {
 }
 
 math {
-    font-family: 'LAT-MT';
+    font-family: LAT-MT;
 }
 
 code {
     background: #eeeeee;
     border-radius: .25em;
-    font-family: 'LAT-MS', monospace;
+    font-family: LAT-MS, monospace;
     padding: .125rem .25rem;
 }
 
@@ -199,8 +201,8 @@ table tfoot th {
 
 pre {
     display: table;
-    font-family: 'LAT-MS', monospace;
-    line-height: 0.9;
+    font-family: LAT-MS, monospace;
+    line-height: .9;
     table-layout: fixed;
     white-space: pre;
     width: 90%;
@@ -228,7 +230,7 @@ pre .ld {
     border-left: 1.6px solid;
     display: table-cell;
     padding-bottom: 4px;
-    padding-left: 0.4rem;
+    padding-left: .4rem;
     padding-top: 4px;
 }
 
@@ -242,7 +244,7 @@ pre code {
 blockquote {
     border-left: 1.6px solid;
     margin-left: 1.6em;
-    padding-left: 0.4em;
+    padding-left: .4em;
 }
 
 .note,
@@ -251,7 +253,7 @@ blockquote {
 .caution {
     border: 1.6px solid;
     margin: 1.6em;
-    padding: 0.4em;
+    padding: .4em;
 }
 
 .note::before,
