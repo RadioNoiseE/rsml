@@ -1,0 +1,319 @@
+/* Cascading Style Sheet for RsML 1.0
+   Copyright (C) 2025, Jing Huang <RadioNoiseE@gmail.com> */
+
+@import "font.css";
+
+::selection {
+    background-color: #bdbdbd;
+    color: white;
+}
+
+body {
+    font-family: LAT-SF, serif;
+    line-height: 1.4;
+    margin: auto;
+    max-width: 56em;
+}
+
+.title {
+    text-align: center;
+}
+
+.subtitle {
+    margin-left: 0;
+    margin-top: -.67em;
+    text-align: center;
+}
+
+.status,
+.abstract {
+    border-left: 1.6px dashed;
+    margin-left: calc(-.4em + -1.6px);
+    padding-left: .4em;
+}
+
+@media only screen and (min-width: 84em) {
+    body {
+        margin-left: calc((100% - 48em)/2);
+    }
+
+    #lot {
+        font-size: 14px;
+        left: 1.4%;
+        max-height: 100vh;
+        overflow-y: auto;
+        position: fixed;
+        top: 6%;
+        user-select: none;
+        -webkit-user-select: none;
+        width: 16em;
+    }
+
+    #lot h2 {
+        display: none;
+    }
+
+    .toc a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .toc ul,
+    .toc tl {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    :not(li) > .toc {
+        margin-left: 2em;
+    }
+
+    .toc li {
+        font-weight: bold;
+    }
+
+    .toc li:not(:first-child) {
+        margin-top: .2em;
+    }
+
+    .toc > li {
+        font-weight: normal;
+        margin-left: 1.6em;
+    }
+
+    .toc > li:not(:first-child) {
+        margin-top: 0;
+    }
+
+    .toc .chapno,
+    .toc .secno {
+        float: left;
+        margin-left: -1.6em;
+        white-space: nowrap;
+        width: 2em;
+    }
+
+    .toc > li .secno {
+        margin-left: -3.2em;
+    }
+}
+
+h2 {
+    margin-left: -1.1em;
+}
+
+h3 {
+    margin-left: -.9em;
+}
+
+mark {
+    background: #eeeeee;
+}
+
+math {
+    font-family: 'LAT-MT';
+}
+
+code {
+    background: #eeeeee;
+    border-radius: .25em;
+    font-family: 'LAT-MS', monospace;
+    padding: .125rem .25rem;
+}
+
+.term {
+    font-weight: bold;
+}
+
+.keyword {
+    font-style: italic;
+}
+
+a {
+    color: #000000;
+}
+
+sup a {
+    text-decoration: none;
+}
+
+.left {
+    margin-right: auto;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.right {
+    margin-left: auto;
+}
+
+dl dt {
+    font-style: italic;
+    font-weight: bold;
+}
+
+figure img {
+    max-width: 100%;
+}
+
+figure figcaption {
+    font-size: 90%;
+    font-style: italic;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table caption {
+    font-style: italic;
+    margin-bottom: 4px;
+}
+
+table td,
+table th {
+    border: 1px solid;
+    padding: 4px 8px;
+}
+
+table thead td,
+table thead th {
+    font-weight: bold;
+}
+
+table tbody td,
+table tbody th {
+    font-weight: normal;
+}
+
+table tfoot td,
+table tfoot th {
+    font-style: italic;
+    font-weight: normal;
+}
+
+pre {
+    display: table;
+    font-family: 'LAT-MS', monospace;
+    line-height: 90%;
+    table-layout: fixed;
+    white-space: pre;
+    width: 90%;
+    word-wrap: break-word;
+}
+
+pre .line {
+    display: table-row;
+}
+
+pre .ln {
+    display: table-cell;
+    font-size: 13px;
+    text-align: right;
+    user-select: none;
+    -webkit-user-select: none;
+    width: 2em;
+}
+
+pre .nsep {
+    display: none;
+}
+
+pre .ld {
+    border-left: 1.6px solid;
+    display: table-cell;
+    padding-bottom: 4px;
+    padding-left: 0.4em;
+    padding-top: 4px;
+}
+
+pre code {
+    background: inherit;
+    border: none;
+    padding: initial;
+    word-wrap: break-word;
+}
+
+blockquote {
+    border-left: 1.6px solid;
+    margin-left: 1.6em;
+    padding-left: 0.4em;
+}
+
+.note,
+.tip,
+.warning,
+.caution {
+    border: 1.6px solid;
+    margin: 1.6em;
+    padding: 0.4em;
+}
+
+.note::before,
+.tip::before,
+.warning::before,
+.caution::before {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.note::before {
+    content: 'Note:';
+}
+
+.tip::before {
+    content: 'Tip:';
+}
+
+.warning::before {
+    content: 'Warning:';
+}
+
+.caution::before {
+    content: 'Caution:';
+}
+
+.note p,
+.tip p,
+.warning p,
+.caution p {
+    margin: 0;
+}
+
+.footnotes {
+    margin-top: 1.6em;
+}
+
+.footnotes hr {
+    border: none;
+    border-top: medium double;
+    margin: 0;
+    max-width: 2in;
+}
+
+.footnote {
+    margin: .4em 0;
+}
+
+.footno {
+    display: inline-block;
+    width: .65em;
+}
+
+.footbody {
+    display: inline-block;
+}
+
+@media only screen and (max-width: 60em) {
+    body {
+        margin: 16px;
+        width: auto;
+    }
+
+    h1, h2, h3, h4 {
+        margin-left: -6px;
+    }
+}

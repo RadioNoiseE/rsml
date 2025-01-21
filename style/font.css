@@ -1,0 +1,41 @@
+@font-face {
+    font-family: 'LAT-MS';
+    font-weight: normal;
+    font-style: normal;
+    src: url("/static/fonts/3270-Regular.woff") format('woff');
+}
+
+@font-face {
+    font-family: 'LAT-SF';
+    font-weight: normal;
+    font-style: normal;
+    src: url("/static/fonts/IBMPlexSerif-Regular.woff") format('woff');
+}
+
+@font-face {
+    font-family: 'LAT-SF';
+    font-weight: normal;
+    font-style: italic;
+    src: url("/static/fonts/IBMPlexSerif-Italic.woff") format('woff');
+}
+
+@font-face {
+    font-family: 'LAT-SF';
+    font-weight: bold;
+    font-style: normal;
+    src: url("/static/fonts/IBMPlexSerif-Bold.woff") format('woff');
+}
+
+@font-face {
+    font-family: 'LAT-SF';
+    font-weight: bold;
+    font-style: italic;
+    src: url("/static/fonts/IBMPlexSerif-BoldItalic.woff") format('woff');
+}
+
+@font-face {
+    font-family: 'LAT-MT';
+    font-weight: normal;
+    font-style: normal;
+    src: url("/static/fonts/IBMPlexMath-Regular.woff") format('woff');
+}
