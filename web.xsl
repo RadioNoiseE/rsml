@@ -611,7 +611,7 @@
   </xsl:template>
 
   <xsl:template mode="vertical" match="rsml:verbatim">
-    <pre>
+    <div class="prewrap"><pre>
       <xsl:if test="@label">
         <xsl:variable name="xref">
           <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:verbatim" format="1-1"/>
@@ -625,7 +625,7 @@
         <xsl:with-param name="capacity" select="string-length(@line)"/>
         <xsl:with-param name="pointer" select="1"/>
       </xsl:call-template>
-    </pre>
+    </pre></div>
   </xsl:template>
 
   <xsl:template mode="vertical" match="rsml:quote">
