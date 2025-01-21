@@ -290,6 +290,7 @@ blockquote {
 .footnotes hr {
     border: none;
     border-top: medium double;
+    color: #000000;
     margin: 0;
     max-width: 2in;
 }
