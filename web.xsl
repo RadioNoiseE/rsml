@@ -527,6 +527,19 @@
 
   <xsl:template mode="vertical" match="rsml:figure">
     <figure>
+      <xsl:attribute name="class">
+        <xsl:choose>
+          <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="string('center')"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:if test="@size">
+        <xsl:attribute name="style">
+          <xsl:value-of select="concat('width:',substring-after(@size,'r'),'%;')"/>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:if test="@label">
         <xsl:variable name="xref">
           <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:figure" format="1-1"/>
@@ -540,21 +553,7 @@
           <xsl:with-param name="uri" select="rsml:image"/>
         </xsl:call-template>
       </xsl:variable>
-      <img src="{rsml:image}" alt="{$image}">
-        <xsl:attribute name="class">
-          <xsl:choose>
-            <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="string('center')"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:attribute>
-        <xsl:if test="@size">
-          <xsl:attribute name="style">
-            <xsl:value-of select="concat('width:',substring-after(@size,'r'),'%;')"/>
-          </xsl:attribute>
-        </xsl:if>
-      </img>
+      <img src="{rsml:image}" alt="{$image}"/>
       <xsl:if test="rsml:caption">
         <figcaption><xsl:apply-templates mode="horizontal" select="rsml:caption"/></figcaption>
       </xsl:if>
@@ -563,14 +562,6 @@
 
   <xsl:template mode="vertical" match="rsml:table">
     <table>
-      <xsl:if test="@label">
-        <xsl:variable name="xref">
-          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:table" format="1-1"/>
-        </xsl:variable>
-        <xsl:attribute name="id">
-          <xsl:value-of select="concat('t',$xref)"/>
-        </xsl:attribute>
-      </xsl:if>
       <xsl:attribute name="class">
         <xsl:choose>
           <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
@@ -579,6 +570,14 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
+      <xsl:if test="@label">
+        <xsl:variable name="xref">
+          <xsl:number level="multiple" count="rsml:unit[@role='chapter']|rsml:table" format="1-1"/>
+        </xsl:variable>
+        <xsl:attribute name="id">
+          <xsl:value-of select="concat('t',$xref)"/>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:if test="rsml:caption">
         <caption><xsl:apply-templates mode="horizontal" select="rsml:caption"/></caption>
       </xsl:if>
