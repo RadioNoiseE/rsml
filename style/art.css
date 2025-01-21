@@ -15,14 +15,14 @@ body {
     max-width: 56em;
 }
 
-.title {
-    text-align: center;
+.title,
+.subtitle {
+    text-align: right;
 }
 
 .subtitle {
     margin-left: 0;
     margin-top: -.67em;
-    text-align: center;
 }
 
 .status {
@@ -31,7 +31,7 @@ body {
 
 .status,
 .abstract {
-    margin: 0 2.4em;
+    margin: 0 1.6em;
 }
 
 @media only screen and (min-width: 84em) {
@@ -317,7 +317,7 @@ cite.year {
     display: inline-block;
 }
 
-@media only screen and (max-width: 60em) {
+@media (max-width: 60em), print {
     body {
         margin: 16px;
         width: auto;
