@@ -290,7 +290,6 @@
               </xsl:choose>
             </a></sup></div>
             <div class="footbody">
-              <xsl:text> </xsl:text>
               <xsl:apply-templates mode="horizontal"/>
             </div>
           </div>
