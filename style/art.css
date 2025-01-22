@@ -34,6 +34,15 @@ body {
     margin: 0 1.6em;
 }
 
+.toc a {
+    text-decoration: none;
+}
+
+.toc .chapno::after,
+.toc .secno::after {
+    content: '.';
+}
+
 @media only screen and (min-width: 84em) {
     body {
         margin-left: calc(50vw - 24em);
@@ -53,10 +62,6 @@ body {
 
     #lot h2 {
         display: none;
-    }
-
-    .toc a {
-        text-decoration: none;
     }
 
     .toc ul,
@@ -97,6 +102,11 @@ body {
 
     .toc > li .secno {
         margin-left: -3em;
+    }
+
+    .toc .chapno::after,
+    .toc .secno::after {
+        content: normal;
     }
 }
 
