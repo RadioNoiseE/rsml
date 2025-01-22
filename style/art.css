@@ -293,6 +293,8 @@ cite.year {
 }
 
 .footnotes {
+    font-size: 90%;
+    margin-left: -.85em;
     margin-top: 1.6em;
 }
 
@@ -301,11 +303,12 @@ cite.year {
     border-top: medium double;
     color: #000000;
     margin: 0;
-    max-width: 2in;
+    margin-bottom: .4em;
+    max-width: 1.6in;
 }
 
 .footnote {
-    margin: .4em 0;
+    margin: .2em 0;
 }
 
 .footno {
