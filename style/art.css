@@ -213,6 +213,7 @@ pre {
     display: table;
     font-family: LAT-MS, monospace;
     line-height: .9;
+    margin: 0;
     table-layout: fixed;
     white-space: pre;
     width: 90%;
