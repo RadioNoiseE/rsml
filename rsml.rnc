@@ -102,7 +102,7 @@ inline.semantic.element =
   element term { inline.text.element+ }
   | element abbreviation { inline.text.element+ }
   | element keyword { inline.text.element+ }
-  | element quote { inline.text.element+ }
+  | element quote { inline.element }
 inline.reference.element =
   element link { attribute literal { text }?, xsd:anyURI }
   | element label { text }
