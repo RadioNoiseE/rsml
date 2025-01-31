@@ -51,7 +51,7 @@ body {
     #lot {
         font-size: 14px;
         left: 1.6vw;
-        max-height: 100vh;
+        max-height: 80vh;
         overflow-y: auto;
         position: fixed;
         top: 6vh;
