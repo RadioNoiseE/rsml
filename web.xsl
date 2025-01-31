@@ -231,7 +231,7 @@
             <a href="#c{$chapter}">
               <span class="chapno"><xsl:value-of select="$chapter"/></span>
               <xsl:text> </xsl:text>
-              <span class="content"><xsl:value-of select="rsml:heading"/></span>
+              <span class="content"><xsl:apply-templates mode="horizontal" select="rsml:heading"/></span>
             </a>
             <xsl:if test="rsml:unit[@role='section']">
               <ul class="toc"><xsl:for-each select="rsml:unit[@role='section']">
@@ -241,7 +241,7 @@
                 <li><a href="#s{$chapter}-{$section}">
                   <span class="secno"><xsl:value-of select="concat($chapter,'.',$section)"/></span>
                   <xsl:text> </xsl:text>
-                  <span class="content"><xsl:value-of select="rsml:heading"/></span>
+                  <span class="content"><xsl:apply-templates mode="horizontal" select="rsml:heading"/></span>
                 </a></li>
               </xsl:for-each></ul>
             </xsl:if>
