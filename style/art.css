@@ -10,6 +10,7 @@
 
 body {
     font-family: LAT-SF, serif;
+    font-size: 1em;
     line-height: 1.4;
     margin: auto;
     max-width: 56em;
@@ -21,6 +22,7 @@ body {
 }
 
 .subtitle {
+    font-style: italic;
     margin-left: 0;
     margin-top: -.67em;
 }
@@ -51,7 +53,7 @@ body {
     #lot {
         font-size: 14px;
         left: 1.6vw;
-        max-height: 80vh;
+        max-height: 84vh;
         overflow-y: auto;
         position: fixed;
         top: 6vh;
@@ -130,7 +132,7 @@ code {
     background: #eeeeee;
     border-radius: .25em;
     font-family: LAT-MS, monospace;
-    padding: .125rem .25rem;
+    padding: .125em .25em;
 }
 
 .term {
@@ -241,7 +243,7 @@ pre .ld {
     border-left: 1.6px solid;
     display: table-cell;
     padding-bottom: 4px;
-    padding-left: .4rem;
+    padding-left: .4em;
     padding-top: 4px;
 }
 
