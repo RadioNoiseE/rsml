@@ -70,7 +70,7 @@
           <span class="ld"><code>
             <xsl:choose>
               <xsl:when test="normalize-space($before)=''">
-                <xsl:text> </xsl:text>
+                <xsl:text>&#8203;</xsl:text>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:value-of select="$before"/>
